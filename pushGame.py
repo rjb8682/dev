@@ -6,6 +6,9 @@ Description: Program to determine the value of a position in the combinatorial g
 # Imports
 import copy
 import sys
+import math
+
+from fractions import Fraction
 
 # Game represented with Ls (black hands) and Rs (white hands) in an array
 
@@ -43,28 +46,57 @@ class PushGame:
 
 		return positions
 
+	def getLeftRightIndicies(self, game):
+		rights = []
+		lefts = []
+
+		for i in range(len(game)):
+			if game[i].lower() == 'l':
+				lefts.append(i)
+			elif game[i].lower() == 'r':
+				rights.append(i)
+
+		return lefts, rights
+
 	def produceMovesets(self):
 		nextLPositions = []
 		nextRPositions = []
 
 		# list of indicies for right and left pieces
-		rightPieces = []
-		leftPieces = []
-
-		for i in range(len(self.game)):
-			if self.game[i].lower() == 'l':
-				leftPieces.append(i)
-			elif self.game[i].lower() == 'r':
-				rightPieces.append(i)
+		leftPieces, rightPieces = self.getLeftRightIndicies(self.game)
 
 		# Find new Left and Right positions, then return them in a tuple
 		return self.getNext(leftPieces), self.getNext(rightPieces)
 
-	def getValue(self, game):
+	def getValue(self, gameObject):
+		gamesValue = None
+		game = gameObject.game
+
 		if str(game) in self.values:
 			return self.values[str(game)]
 		else:
+			lefts, rights = self.getLeftRightIndicies(game)
+			if len(lefts) + len(rights) == 1:
+				# Only one in either lefts or rights
+				if len(lefts) == 1:
+					gamesValue = lefts[0]+1
+				else:
+					gamesValue = (rights[0]+1)*-1
+			else:
 
+
+		if gamesValue:
+			self.values[str(game)] = gamesValue
+			return gamesValue
+
+	def getFinalScore(self, lefts, rights):
+		leftVal = max(lefts)
+		rightVal = min(rights)
+
+		if abs(leftVal - rightVal) > 1:
+			return math.ceil(min(leftVal, rightVal))
+		else:
+			return (leftVal + rightVal) / 2
 
 	def getValueOfGame(self):
 		# get list of PushGame objects that are the next positions from the current one
@@ -73,7 +105,10 @@ class PushGame:
 		rightVals = []
 
 		for pos in nextL:
-			self.getValue(pos)
+			leftVals.append(self.getValue(pos))
+
+		for pos in nextR:
+			rightVals.append(self.getValue(pos))
 
 	def __str__(self):
 		newGame = []
@@ -96,3 +131,5 @@ if __name__ == "__main__":
 
 	startingGame = sys.argv[1]
 	testGame = PushGame(list(startingGame))
+
+	testGame.getValueOfGame()

@@ -7,12 +7,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import java.util.ArrayList;
+
 import model.DrawingApp;
 import model.Square;
 import observing.Observer;
 
-import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * The view + controller for the second part of Lab 1.
@@ -31,8 +31,6 @@ public class ShapeGUI extends Application implements Observer<Square, String> {
     private static final double DIM = 100;
 
     private Group root;
-
-    private Optional< Rectangle > chosen = Optional.empty();
     private int selectedIndex = -1;
 
     public static void main( String[] args ) {

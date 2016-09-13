@@ -91,7 +91,6 @@ public class ShapeGUI extends Application implements Observer<Square, String> {
         if ( button == MouseButton.PRIMARY ) {
             Rectangle sourceRect = (Rectangle)mEvent.getSource();
             selectedIndex = rectangles.indexOf(sourceRect);
-            System.out.println("SelectedIndex: " + selectedIndex);
             mEvent.consume(); // Don't pass up to Scene.
         }
     }
@@ -109,7 +108,9 @@ public class ShapeGUI extends Application implements Observer<Square, String> {
                 model.makeSquare(mEvent.getX(), mEvent.getY());
                 break;
             case SECONDARY:
-                model.moveSquare(selectedIndex, mEvent.getX(), mEvent.getY());
+                if (selectedIndex != -1) {
+                    model.moveSquare(selectedIndex, mEvent.getX(), mEvent.getY());
+                }
                 break;
             default:
                 System.err.println( "Other mouse button pushed." );
